@@ -1,3 +1,4 @@
+import * as allure from "allure-js-commons";
 /// <reference types="cypress" />
 
 // Welcome to Cypress!
