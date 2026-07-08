@@ -1,7 +1,11 @@
+import * as allure from "allure-js-commons";
 /// <reference types="cypress" />
 
 context('Assertions', () => {
   beforeEach(() => {
+    allure.epic("UI Interactions");
+    allure.feature("Assertions");
+    allure.story("Verifying page state");
     cy.visit('http://localhost:8080/commands/assertions')
   })
 
