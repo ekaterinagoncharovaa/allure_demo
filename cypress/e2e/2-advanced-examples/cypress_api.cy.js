@@ -1,3 +1,4 @@
+import * as allure from "allure-js-commons";
 /// <reference types="cypress" />
 
 context('Cypress APIs', () => {
@@ -66,6 +67,11 @@ context('Cypress APIs', () => {
 
   context('Cypress.config()', () => {
     beforeEach(() => {
+      allure.epic("Framework APIs");
+      allure.feature("Cypress.config()");
+      allure.owner("Ekaterina Goncharova");
+      allure.severity("critical");
+      allure.issue("https://github.com/ekaterinagoncharovaa/allure_demo/issues/1", "DEMO-1: baseUrl expectation is outdated");
       cy.visit('http://localhost:8080/cypress-api')
     })
 
