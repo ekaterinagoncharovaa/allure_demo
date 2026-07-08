@@ -1,7 +1,11 @@
+import * as allure from "allure-js-commons";
 /// <reference types="cypress" />
 
 context('Actions', () => {
   beforeEach(() => {
+    allure.epic("UI Interactions");
+    allure.feature("Actions");
+    allure.story("Interacting with DOM elements");
     cy.visit('http://localhost:8080/commands/actions')
   })
 
