@@ -7,13 +7,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      # These are NOT the actual credentials — they are references to
-      # repository secrets. Add the values via Settings -> Secrets and
-      # variables -> Actions; no changes to this file are needed.
+      # References to repository secrets (Settings -> Secrets and variables -> Actions)
       ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
       ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
       ALLURE_LAUNCH_NAME: "Cypress demo #${{ github.run_number }}"
+      ALLURE_RESULTS: allure-results   # where allure-cypress writes result files
     steps:
       - uses: actions/checkout@v4         # check out the repository code
 
@@ -28,7 +27,7 @@ jobs:
         uses: allure-framework/setup-allurectl@v1
 
       - name: Run tests and stream to TestOps
-        run: allurectl watch -- npm run local:run   # start local site, wait, run Cypress
+        run: allurectl watch -- npm run local:run   # start site, run Cypress, stream results
 
       - name: Debug — check allure results
         if: always()                                # run this even when tests fail
