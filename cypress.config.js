@@ -9,6 +9,6 @@ module.exports = defineConfig({
       });
       return config;
     },
-    baseUrl: 'https://example.cypress.io',
+    baseUrl: 'http://localhost:8080',
   },
 })
