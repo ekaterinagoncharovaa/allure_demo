@@ -1,7 +1,11 @@
+import * as allure from "allure-js-commons";
 /// <reference types="cypress" />
 
 context('Cookies', () => {
   beforeEach(() => {
+    allure.epic("Browser State");
+    allure.feature("Cookies");
+    allure.story("Managing browser cookies");
     Cypress.Cookies.debug(true)
 
     cy.visit('http://localhost:8080/commands/cookies')
