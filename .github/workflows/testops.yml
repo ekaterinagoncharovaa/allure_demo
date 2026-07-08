@@ -28,4 +28,8 @@ jobs:
         uses: allure-framework/setup-allurectl@v1
 
       - name: Run tests and stream to TestOps
-        run: allurectl watch -- npx cypress run   # results stream to TestOps live
+        run: allurectl watch -- npm run local:run   # start local site, wait, run Cypress
+
+      - name: Debug — check allure results
+        if: always()                                # run this even when tests fail
+        run: ls allure-results || echo "no allure-results folder created"
