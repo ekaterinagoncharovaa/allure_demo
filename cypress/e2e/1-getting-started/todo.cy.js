@@ -14,6 +14,9 @@ import * as allure from "allure-js-commons";
 
 describe('example to-do app', () => {
   beforeEach(() => {
+    allure.epic("Todo Application");
+    allure.feature("Task Management");
+    allure.story("Managing the task list");
     // Cypress starts out with a blank slate for each test
     // so we must tell it to visit our website with the `cy.visit()` command.
     // Since we want to visit the same URL at the start of all our tests,
