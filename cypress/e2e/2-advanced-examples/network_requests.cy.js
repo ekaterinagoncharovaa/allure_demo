@@ -1,7 +1,11 @@
+import * as allure from "allure-js-commons";
 /// <reference types="cypress" />
 
 context('Network Requests', () => {
   beforeEach(() => {
+    allure.epic("Network");
+    allure.feature("HTTP Requests");
+    allure.story("Making and intercepting requests");
     cy.visit('http://localhost:8080/commands/network-requests')
   })
 
