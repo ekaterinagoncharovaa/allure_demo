@@ -1,0 +1,20 @@
+name: Chrome Docker
+
+on: [push, workflow_dispatch]
+
+jobs:
+  # run Chrome inside a Docker container
+  chrome:
+    runs-on: ubuntu-24.04
+    # https://github.com/cypress-io/cypress-docker-images
+    container: cypress/browsers:24.17.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Chrome
+        uses: cypress-io/github-action@v7
+        timeout-minutes: 10
+        with:
+          build: npm run build
+          start: npm start
+          browser: chrome
