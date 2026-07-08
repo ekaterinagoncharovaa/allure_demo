@@ -1,0 +1,31 @@
+name: testops
+
+on:
+  workflow_dispatch:        # manual trigger — the Run workflow button
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # These are NOT the actual credentials — they are references to
+      # repository secrets. Add the values via Settings -> Secrets and
+      # variables -> Actions; no changes to this file are needed.
+      ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+      ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+      ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
+      ALLURE_LAUNCH_NAME: "Cypress demo #${{ github.run_number }}"
+    steps:
+      - uses: actions/checkout@v4         # check out the repository code
+
+      - uses: actions/setup-node@v4       # install Node.js
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci                       # install Cypress and allure-cypress
+
+      - name: Install allurectl
+        uses: allure-framework/setup-allurectl@v1
+
+      - name: Run tests and stream to TestOps
+        run: allurectl watch -- npx cypress run   # results stream to TestOps live
