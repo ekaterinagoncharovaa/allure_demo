@@ -23,18 +23,16 @@ context('Demo: failures and flaky tests', () => {
 
   it('loads the dashboard within SLA', () => {
     allure.story("Infrastructure hiccups");
-    // Fails on the 1st attempt, passes on retry -> flaky
-    cy.task('nextAttempt', 'sla').then((attempt) => {
-      cy.visit('/');
-      expect(attempt, 'load time is under the SLA').to.be.greaterThan(1);
-    })
+    cy.visit('/');
+    const run = Number(Cypress.env('RUN_PARITY') || 0);
+    // Red on even runs, green on odd runs -> alternating history = classic flake
+    expect(run % 2, 'load time is under the SLA').to.eq(1);
   })
 
   it('receives the webhook callback in time', () => {
     allure.story("Infrastructure hiccups");
-    // Fails on the 1st attempt, passes on retry -> flaky
-    cy.task('nextAttempt', 'webhook').then((attempt) => {
-      expect(attempt, 'callback arrived before the timeout').to.be.greaterThan(1);
-    })
+    const run = Number(Cypress.env('RUN_PARITY') || 0);
+    // Red on odd runs, green on even runs (opposite parity)
+    expect(run % 2, 'callback arrived before the timeout').to.eq(0);
   })
 })
