@@ -7,6 +7,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
+      CYPRESS_RUN_PARITY: ${{ github.run_number }}   # demo: drives cross-launch flakiness
       # References to repository secrets (Settings -> Secrets and variables -> Actions)
       ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
