@@ -1,8 +1,14 @@
 name: testops
 
 on:
-  workflow_dispatch:        # manual trigger — the Run workflow button
-
+  workflow_dispatch:        # manual trigger + TestOps rerun entry point
+    inputs:
+      ALLURE_JOB_RUN_ID:
+        description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
+        required: false
+      ALLURE_USERNAME:
+        description: "ALLURE_USERNAME service parameter. Leave blank."
+        required: false
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,6 +20,7 @@ jobs:
       ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
       ALLURE_LAUNCH_NAME: "Cypress demo #${{ github.run_number }}"
       ALLURE_RESULTS: allure-results   # where allure-cypress writes result files
+      ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}   # rerun context from TestOps
     steps:
       - uses: actions/checkout@v4         # check out the repository code
 
