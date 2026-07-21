@@ -22,7 +22,7 @@ jobs:
       ALLURE_RESULTS: allure-results   # where allure-cypress writes result files
       ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}   # rerun context from TestOps
       ALLURE_LAUNCH_TAGS: "cypress,demo"                                # tags shown on the launch
-      ALLURE_JOB_PARAMETERS: "browser=Electron,os=Linux,host=demo"
+      ALLURE_JOB_PARAMETERS: "browser=Electron,os=Linux,device=demo-stand"
     steps:
       - uses: actions/checkout@v4         # check out the repository code
 
