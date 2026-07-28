@@ -42,3 +42,14 @@ jobs:
       - name: Debug — check allure results
         if: always()                                # run this even when tests fail
         run: ls allure-results || echo "no allure-results folder created"
+      - name: Debug — check allure results
+        if: always()
+        run: ls allure-results || echo "no allure-results folder created"
+
+      - name: Upload allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
+          if-no-files-found: warn
