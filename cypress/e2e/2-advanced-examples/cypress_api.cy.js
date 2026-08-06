@@ -71,7 +71,6 @@ context('Cypress APIs', () => {
       allure.feature("Cypress.config()");
       allure.owner("Ekaterina Goncharova");
       allure.severity("critical");
-      allure.issue("https://github.com/ekaterinagoncharovaa/allure_demo/issues/1", "DEMO-1: baseUrl expectation is outdated");
       cy.visit('http://localhost:8080/cypress-api')
     })
 
@@ -80,7 +79,7 @@ context('Cypress APIs', () => {
       let myConfig = Cypress.config()
 
       expect(myConfig).to.have.property('animationDistanceThreshold', 5)
-      expect(myConfig).to.have.property('baseUrl', null)
+      expect(myConfig).to.have.property('baseUrl', 'http://localhost:8080')
       expect(myConfig).to.have.property('defaultCommandTimeout', 4000)
       expect(myConfig).to.have.property('requestTimeout', 5000)
       expect(myConfig).to.have.property('responseTimeout', 30000)
