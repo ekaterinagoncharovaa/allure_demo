@@ -1,5 +1,4 @@
 name: testops
-
 on:
   workflow_dispatch:        # manual trigger + TestOps rerun entry point
     inputs:
@@ -13,14 +12,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      CYPRESS_RUN_PARITY: ${{ github.run_number }}   
+      CYPRESS_RUN_PARITY: ${{ github.run_number }}
       ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
       ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
       ALLURE_LAUNCH_NAME: "Cypress demo"
-      ALLURE_RESULTS: allure-results  
-      ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}   
-      ALLURE_LAUNCH_TAGS: "cypress,demo"                               
+      ALLURE_RESULTS: allure-results
+      ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+      ALLURE_LAUNCH_TAGS: "cypress,demo"
       ALLURE_JOB_PARAMETERS: "browser=Electron,os=Linux,device=demo-stand"
     steps:
       - uses: actions/checkout@v4         # check out the repository code
@@ -28,6 +27,16 @@ jobs:
       - uses: actions/setup-node@v4       # install Node.js
         with:
           node-version: "20"
+          cache: "npm"                    # <-- ADDED: caches ~/.npm between runs
+
+      # <-- ADDED: caches the Cypress binary (~500 MB) between runs
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
 
       - name: Install dependencies
         run: npm ci                       # install Cypress and allure-cypress
@@ -40,9 +49,6 @@ jobs:
 
       - name: Debug — check allure results
         if: always()                                # run this even when tests fail
-        run: ls allure-results || echo "no allure-results folder created"
-      - name: Debug — check allure results
-        if: always()
         run: ls allure-results || echo "no allure-results folder created"
 
       - name: Upload allure results
