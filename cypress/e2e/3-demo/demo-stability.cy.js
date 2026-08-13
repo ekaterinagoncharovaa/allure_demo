@@ -3,13 +3,22 @@ import * as allure from "allure-js-commons";
 /**
  * Demo stand: one failure cluster + two flaky tests.
  *
- * The four billing tests all fail with the SAME error message plus a
+ * The four billing tests fail with the SAME error message plus a
  * run-specific request id. That is what makes the "write a regex, strip
  * the noise, link them all to one defect" moment real rather than staged.
  *
- * The two flaky tests alternate on run parity, so their History shows
- * genuine red/green/red/green across launches.
+ * Issue links are declared inside the test body (not in beforeEach):
+ * hooks and tests are separate contexts, and metadata set in a hook does
+ * not reliably attach to the result.
+ *
+ * ISSUE NUMBERS: change the two constants below if your tickets get
+ * different numbers on GitHub.
  */
+
+const ISSUE_BILLING = 4; // "Billing service unreachable from staging"
+
+const issueUrl = (n) =>
+  `https://github.com/ekaterinagoncharovaa/allure_demo/issues/${n}`;
 
 // Run-specific noise. The presenter strips this part in the regex.
 const reqId = () => Math.random().toString(16).slice(2, 8);
@@ -36,16 +45,22 @@ context("Demo: billing integration", () => {
   SCENARIOS.forEach(([title, severity]) => {
     it(title, { retries: 0 }, () => {
       allure.severity(severity);
+      // One root cause, four symptoms -> all four point at the same ticket.
+      allure.issue(
+        issueUrl(ISSUE_BILLING),
+        `DEMO-${ISSUE_BILLING}: billing service unreachable from staging`,
+      );
       allure.description(
         "Calls the billing service and verifies the response payload. " +
           "**Known issue**: the service is unreachable from this environment.",
       );
-      // All four fail with the same message -> one root cause, four symptoms.
       expect(false, `${BILLING_ERROR} (request-id: ${reqId()})`).to.eq(true);
     });
   });
 });
 
+// No issue link here on purpose: a flaky test is not a known problem with a
+// ticket, it is a test we have not decided about yet. It gets muted, not filed.
 context("Demo: flaky tests", () => {
   beforeEach(() => {
     allure.epic("Telecom Portal");
