@@ -3,7 +3,7 @@ import * as allure from "allure-js-commons";
 context("Demo: living documentation", () => {
   beforeEach(() => {
     allure.epic("Telecom Portal");
-    allure.feature("Billing");
+    allure.feature("Self-Service");
     allure.owner("Ekaterina Goncharova");
     allure.story("Invoice history");
   });
@@ -21,11 +21,15 @@ context("Demo: living documentation", () => {
       expect(true).to.eq(true);
     });
 
-    allure.step("Request invoices for the current period", () => {
+    allure.step("Select the current billing period", () => {
       expect(true).to.eq(true);
     });
 
     allure.step("Verify the invoice totals", () => {
+      expect(true).to.eq(true);
+    });
+
+    allure.step("Check the invoice PDF is downloadable", () => {
       expect(true).to.eq(true);
     });
   });
