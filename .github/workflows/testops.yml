@@ -9,7 +9,6 @@ on:
         description: "ALLURE_USERNAME service parameter. Leave blank."
         required: false
   pull_request:
-    branches: [main]
 jobs:
   test:
     runs-on: ubuntu-latest
