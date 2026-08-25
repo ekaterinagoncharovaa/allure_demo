@@ -7,14 +7,18 @@ import * as allure from "allure-js-commons";
  * value on the call is that the test case generated from it in TestOps
  * is a readable document: named steps, owner, severity, description.
  *
- * This is the "before" version. The docs-demo branch changes three
- * things in it, and the test case follows without anyone touching it.
+ * This is the "after" version, committed on the docs-demo branch.
+ * Three changes vs main:
+ *   1. feature: Billing -> Self-Service
+ *   2. step renamed: "Request invoices for the current period"
+ *                 -> "Select the current billing period"
+ *   3. new step added: "Check the invoice PDF is downloadable"
  */
 
 context("Demo: living documentation", () => {
   beforeEach(() => {
     allure.epic("Telecom Portal");
-    allure.feature("Billing");
+    allure.feature("Self-Service");
     allure.owner("Ekaterina Goncharova");
     allure.story("Invoice history");
   });
@@ -32,11 +36,15 @@ context("Demo: living documentation", () => {
       cy.visit("/");
     });
 
-    allure.step("Request invoices for the current period", () => {
+    allure.step("Select the current billing period", () => {
       cy.get("body").should("exist");
     });
 
     allure.step("Verify the invoice totals", () => {
+      expect(true).to.eq(true);
+    });
+
+    allure.step("Check the invoice PDF is downloadable", () => {
       expect(true).to.eq(true);
     });
   });
