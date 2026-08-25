@@ -8,6 +8,8 @@ on:
       ALLURE_USERNAME:
         description: "ALLURE_USERNAME service parameter. Leave blank."
         required: false
+  push:
+    branches-ignore: [main]
   pull_request:
     branches: [main]
 jobs:
