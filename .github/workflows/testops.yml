@@ -1,6 +1,6 @@
 name: testops
 on:
-  workflow_dispatch:        # manual trigger + TestOps rerun entry point
+  workflow_dispatch:
     inputs:
       ALLURE_JOB_RUN_ID:
         description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
@@ -8,6 +8,8 @@ on:
       ALLURE_USERNAME:
         description: "ALLURE_USERNAME service parameter. Leave blank."
         required: false
+  pull_request:
+    branches: [main]
 jobs:
   test:
     runs-on: ubuntu-latest
