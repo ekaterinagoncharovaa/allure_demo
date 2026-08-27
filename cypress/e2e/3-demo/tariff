@@ -1,6 +1,6 @@
 import * as allure from "allure-js-commons";
 
-it("Subscriber can switch to a different tariff plan @allure.id:75553", () => {
+it("Subscriber can switch to a different tariff plan @allure.id:75630", () => {
   allure.owner("kategonc");
   allure.step("Open the tariff plans page", () => {
     expect(true).to.eq(true);
