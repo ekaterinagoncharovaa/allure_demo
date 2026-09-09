@@ -110,18 +110,15 @@ function sample(pool, n, seed) {
 // f1, f2 чинятся на следующем прогоне; f3..f6 продолжают мигать.
 // Первые ЧЕТЫРЕ чинятся на следующем прогоне (это те, что "починились"
 // после перезапуска на демо). Остальные шесть продолжают мигать.
-const FLAKY_HEAL_COUNT = 4;
+// Первые ТРИ чинятся на следующем прогоне — это те, что "починились"
+// после перезапуска на демо. Оставшиеся ДВА продолжают мигать: ровно два мьюта.
+const FLAKY_HEAL_COUNT = 3;
 const FLAKY_IDS = [
   "publicapi::usage-rate_limit",
   "publicapi::invoices-pagination",
   "adminui::invoices-export",
-  "adminui::overview-filter",
   "selfservice::payments-web",
   "network::west-top_up-basic",
-  "tariffs::unlimited-south-android",
-  "subscribers::east-id_card-ios",
-  "billing::family-roaming_on-north",
-  "notifications::overdue-ussd-north",
 ];
 const FLAKY_SET = new Set(FLAKY_IDS);
 
@@ -147,14 +144,10 @@ const CLUSTERS = [
 ];
 
 
-const SINGLES = [
-  "AssertionError: expected 200, got 502",
-  "AssertionError: payload size 12.4 MB exceeds limit 10 MB",
-  "TimeoutError: request did not finish within 30s",
-  "AssertionError: duplicate subscriber_id in the response",
-  "KeyError: 'invoice_total' not found in response body",
-  "ValueError: could not parse timestamp '2026-13-01T00:00:00'",
-];
+// Одиночных падений нет намеренно: каждое требовало бы отдельного разбора
+// и растягивало демо. Всё, что падает, либо в кластере, либо флаки.
+const SINGLES = [];
+
 
 // ---------- раскладка падений ----------
 const failures = {};   // id -> { message, noisy, severity, cluster }
@@ -175,9 +168,11 @@ CLUSTERS.forEach((cluster) => {
 });
 
 const singlePool = SUITES.filter((c) => !failures[c.id] && !FLAKY_SET.has(c.id));
-Array.from(sample(singlePool, SINGLES.length, "singles")).forEach((id, i) => {
-  failures[id] = { message: SINGLES[i], noisy: false, severity: "normal", cluster: null };
-});
+if (SINGLES.length) {
+  Array.from(sample(singlePool, SINGLES.length, "singles")).forEach((id, i) => {
+    failures[id] = { message: SINGLES[i], noisy: false, severity: "normal", cluster: null };
+  });
+}
 
 // ---------- API для спеков ----------
 function casesFor(key) {
@@ -196,10 +191,10 @@ function verdictFor(testCase) {
     const idx = FLAKY_IDS.indexOf(testCase.id);
     // первые два чинятся на СЛЕДУЮЩЕМ прогоне (чётный красный -> нечётный зелёный),
     // остальные мигают редко и независимо друг от друга
-    const green =
-      idx < FLAKY_HEAL_COUNT
-        ? run % 2 === 1
-        : hash(testCase.id + "|" + run) % 5 === 0;
+    // Первые три мигают по чётности прогона: красные на чётном, зелёные на
+    // следующем. Последние два падают всегда — это те самые два мьюта,
+    // и они предсказуемы, чтобы демо не зависело от везения.
+    const green = idx < FLAKY_HEAL_COUNT ? run % 2 === 1 : false;
     return green ? null : {
       message: "flaky: timing-dependent assertion failed",
       noisy: false, severity: "minor", cluster: null, flaky: true,
