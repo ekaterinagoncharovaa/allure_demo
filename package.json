@@ -44,7 +44,9 @@
     "local:open": "start-test 8080 cy:open",
     "local:run": "start-test 8080 cy:run",
     "local:run:record": "start-test 8080 cy:run:record",
-    "prepare": "node .husky/install.mjs"
+    "prepare": "node .husky/install.mjs",
+    "cy:run:demo": "cypress run --spec \"cypress/e2e/3-demo/**/*.cy.js\"",
+    "local:run:demo": "start-test 8080 cy:run:demo"
   },
   "repository": {
     "type": "git",
