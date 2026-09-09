@@ -129,46 +129,23 @@ const FLAKY_SET = new Set(FLAKY_IDS);
 const CLUSTERS = [
   {
     name: "billing-gateway",
-    size: 36,
-    pools: ["billing", "payments"],
-    // тот же формат, что в demo-stability: постоянный текст + шумный request-id
+    size: 70,
+    pools: ["billing", "payments", "tariffs"],
+    // постоянный текст + шумный request-id: его и отрезаем регуляркой на демо
     message: "connect ECONNREFUSED 10.0.4.12:8443 - telecom-billing-service unreachable",
     noisy: true,
     severity: "critical",
   },
   {
     name: "profile-schema",
-    size: 26,
-    pools: ["subscribers", "selfservice"],
+    size: 40,
+    pools: ["subscribers", "selfservice", "adminui"],
     message: "SchemaValidationError: required field 'segment_code' is missing in subscriber profile",
     noisy: false,
     severity: "critical",
   },
-  {
-    name: "sms-provider",
-    size: 16,
-    pools: ["notifications", "network"],
-    message: "SmsProviderError: gateway returned 503 Service Unavailable",
-    noisy: false,
-    severity: "normal",
-  },
-  {
-    name: "tariff-cache",
-    size: 20,
-    pools: ["tariffs", "publicapi"],
-    message: "AssertionError: tariff cache is stale, served revision 41 instead of 42",
-    noisy: false,
-    severity: "normal",
-  },
-  {
-    name: "session-timeout",
-    size: 12,
-    pools: ["adminui", "selfservice"],
-    message: "TimeoutError: session expired, redirected to /login",
-    noisy: false,
-    severity: "normal",
-  },
 ];
+
 
 const SINGLES = [
   "AssertionError: expected 200, got 502",

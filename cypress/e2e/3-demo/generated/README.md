@@ -5,22 +5,22 @@
 
 ## Кластеры падений
 
-480 тестов, падает **126** — это 26%. Внутри кластера **одинаковое сообщение об ошибке**,
-поэтому одно automation rule закрывает весь кластер.
+480 тестов, падает **126** — это 26%. Всего **два кластера**: внутри каждого одинаковое
+сообщение об ошибке, поэтому два automation rule закрывают 110 падений из 126.
 
 | Кластер | Тестов | Сообщение | Регулярка для правила |
 |---|---|---|---|
-| billing-gateway | **36** | `connect ECONNREFUSED 10.0.4.12:8443 - telecom-billing-service unreachable (request-id: a1b2c3)` | `.*telecom-billing-service unreachable.*` |
-| profile-schema | 26 | `SchemaValidationError: required field 'segment_code' is missing in subscriber profile` | `.*required field 'segment_code' is missing.*` |
-| tariff-cache | 20 | `AssertionError: tariff cache is stale, served revision 41 instead of 42` | `.*tariff cache is stale.*` |
-| sms-provider | 16 | `SmsProviderError: gateway returned 503 Service Unavailable` | `.*gateway returned 503.*` |
-| session-timeout | 12 | `TimeoutError: session expired, redirected to /login` | `.*session expired.*` |
-| одиночные | 6 | у каждого своё | — |
-| флаки | 10 | `flaky: timing-dependent assertion failed` | не заводим дефект, мьютим |
+| **billing-gateway** | **70** | `connect ECONNREFUSED 10.0.4.12:8443 - telecom-billing-service unreachable (request-id: a1b2c3)` | `.*telecom-billing-service unreachable.*` |
+| **profile-schema** | **40** | `SchemaValidationError: required field 'segment_code' is missing in subscriber profile` | `.*required field 'segment_code' is missing.*` |
+| одиночные | 6 | у каждого своё | дефект не заводим |
+| флаки | ~10 | `flaky: timing-dependent assertion failed` | не дефект, мьютим |
 
 У **billing-gateway** в конце сообщения болтается случайный `request-id` — тот самый случай,
-когда на демо надо написать регулярку и отрезать шум. Остальные кластеры ловятся по любой
+когда на демо надо написать регулярку и отрезать шум. Второй кластер ловится по любой
 устойчивой части текста.
+
+После двух правил в списке нерешённого остаётся около шестнадцати тестов — это и есть
+хвост, который на демо перезапускается, частично чинится, а остальное мьютится.
 
 ## Флаки и перезапуск
 
