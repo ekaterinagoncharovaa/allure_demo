@@ -1,0 +1,52 @@
+cat > .github/workflows/reprisk.yml <<'YAML'
+name: RepRisk demo
+# Прогон демо-набора RepRisk: 75 тестов, два кластера дефектов, три флаки.
+# Флаки зеленеют при перезапуске из TestOps.
+on:
+  workflow_dispatch:
+    inputs:
+      ALLURE_JOB_RUN_ID:
+        description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
+        required: false
+      ALLURE_USERNAME:
+        description: "ALLURE_USERNAME service parameter. Leave blank."
+        required: false
+jobs:
+  reprisk:
+    runs-on: ubuntu-latest
+    env:
+      CYPRESS_IS_RERUN: ${{ github.event.inputs.ALLURE_JOB_RUN_ID != '' }}
+      ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+      ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+      ALLURE_PROJECT_ID: "15889"
+      ALLURE_LAUNCH_NAME: "RepRisk regression"
+      ALLURE_RESULTS: allure-results
+      ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+      ALLURE_LAUNCH_TAGS: "cypress,reprisk"
+      ALLURE_JOB_PARAMETERS: "browser=Electron,os=Linux,env=staging"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install allurectl
+        uses: allure-framework/setup-allurectl@v1
+
+      - name: Run RepRisk specs and stream to TestOps
+        run: allurectl watch -- npm run cy:run:reprisk
+YAML
+echo "готово"
