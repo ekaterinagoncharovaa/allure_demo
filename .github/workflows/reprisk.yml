@@ -1,4 +1,3 @@
-cat > .github/workflows/reprisk.yml <<'YAML'
 name: RepRisk demo
 # Прогон демо-набора RepRisk: 75 тестов, два кластера дефектов, три флаки.
 # Флаки зеленеют при перезапуске из TestOps.
@@ -48,5 +47,3 @@ jobs:
 
       - name: Run RepRisk specs and stream to TestOps
         run: allurectl watch -- npm run cy:run:reprisk
-YAML
-echo "готово"
