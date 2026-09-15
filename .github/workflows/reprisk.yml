@@ -46,4 +46,4 @@ jobs:
         uses: allure-framework/setup-allurectl@v1
 
       - name: Run RepRisk specs and stream to TestOps
-        run: allurectl watch -- npm run cy:run:reprisk
+        run: allurectl watch -- npm run local:run:reprisk

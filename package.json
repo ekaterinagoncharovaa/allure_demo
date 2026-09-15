@@ -47,7 +47,8 @@
     "prepare": "node .husky/install.mjs",
     "cy:run:demo": "cypress run --spec \"cypress/e2e/3-demo/**/*.cy.js\"",
     "local:run:demo": "start-test 8080 cy:run:demo",
-    "cy:run:reprisk": "cypress run --spec \"cypress/e2e/4-reprisk/**/*.cy.js\""
+    "cy:run:reprisk": "cypress run --spec \"cypress/e2e/4-reprisk/**/*.cy.js\"",
+    "local:run:reprisk": "start-test 8080 cy:run:reprisk"
   },
   "repository": {
     "type": "git",
