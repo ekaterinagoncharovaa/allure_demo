@@ -17,7 +17,7 @@ jobs:
       CYPRESS_IS_RERUN: ${{ github.event.inputs.ALLURE_JOB_RUN_ID != '' }}
       ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-      ALLURE_PROJECT_ID: "15889"
+      ALLURE_PROJECT_ID: "5426"
       ALLURE_LAUNCH_NAME: "RepRisk regression"
       ALLURE_RESULTS: allure-results
       ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
