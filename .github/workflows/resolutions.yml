@@ -1,0 +1,51 @@
+name: Resolutions demo
+# Прогон набора для проверки Resolutions: 40 тестов, 6 причин падений.
+# Флаки падают на нечётных прогонах и зеленеют на чётных и при rerun из TestOps.
+on:
+  workflow_dispatch:
+    inputs:
+      ALLURE_JOB_RUN_ID:
+        description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
+        required: false
+      ALLURE_USERNAME:
+        description: "ALLURE_USERNAME service parameter. Leave blank."
+        required: false
+jobs:
+  resolutions:
+    runs-on: ubuntu-latest
+    env:
+      CYPRESS_IS_RERUN: ${{ github.event.inputs.ALLURE_JOB_RUN_ID != '' }}
+      CYPRESS_RUN_NUMBER: ${{ github.run_number }}
+      ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+      ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+      # Тот же проект, что и у demo.yml. Для отдельного проекта впишите его ID строкой.
+      ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
+      ALLURE_LAUNCH_NAME: "Resolutions demo #${{ github.run_number }}"
+      ALLURE_RESULTS: allure-results
+      ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
+      ALLURE_LAUNCH_TAGS: "cypress,resolutions"
+      ALLURE_JOB_PARAMETERS: "browser=Electron,os=Linux,env=staging"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            cypress-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install allurectl
+        uses: allure-framework/setup-allurectl@v1
+
+      - name: Run Resolutions specs and stream to TestOps
+        run: allurectl watch -- npm run local:run:resolutions
