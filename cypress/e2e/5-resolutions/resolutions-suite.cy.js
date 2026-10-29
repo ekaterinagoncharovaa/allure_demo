@@ -1,9 +1,8 @@
 import * as allure from 'allure-js-commons'
 import { CATALOGUE, verdictFor } from './_resolutions-catalogue'
 
-// Rerun из TestOps: workflow прокидывает сюда признак по ALLURE_JOB_RUN_ID.
-const IS_RERUN = String(Cypress.env('IS_RERUN')).toLowerCase() === 'true'
-// Номер прогона GitHub Actions: флаки падают на нечётных.
+// Номер прогона GitHub Actions: флаки падают на нечётных и проходят на чётных.
+// Rerun из TestOps запускает новый прогон с номером +1, поэтому флаки на нём зеленеют.
 const RUN_NUMBER = Number(Cypress.env('RUN_NUMBER') || 1)
 // Темп прогона. Меняется через CYPRESS_STEP_DELAY.
 const STEP_DELAY = Number(Cypress.env('STEP_DELAY') || 150)
@@ -35,6 +34,7 @@ Object.entries(BY_FEATURE).forEach(([feature, items]) => {
         allure.severity(item.severity)
         allure.owner(item.owner)
         allure.label('component', item.component)
+        allure.label('framework', 'Cypress')
         allure.tags(...item.tags)
         allure.parameter('environment', 'staging')
 
@@ -44,7 +44,7 @@ Object.entries(BY_FEATURE).forEach(([feature, items]) => {
         allure.step(`Then ${item.title.toLowerCase()}`, () => {})
 
         cy.wait(STEP_DELAY).then(() => {
-          const verdict = verdictFor(item, { isRerun: IS_RERUN, runNumber: RUN_NUMBER })
+          const verdict = verdictFor(item, { runNumber: RUN_NUMBER })
           if (!verdict.ok) throw toError(verdict.message)
         })
       })

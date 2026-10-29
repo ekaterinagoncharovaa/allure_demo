@@ -1,9 +1,14 @@
 name: Resolutions demo
 # Прогон набора для проверки Resolutions: 40 тестов, 6 причин падений.
-# Флаки падают на нечётных прогонах и зеленеют на чётных и при rerun из TestOps.
+# Флаки падают на нечётных номерах прогона и зеленеют на следующем (чётном),
+# в том числе при Rerun из TestOps: rerun — это новый прогон воркфлоу с номером +1.
 on:
   workflow_dispatch:
     inputs:
+      BROWSER:
+        description: "Browser: electron, chrome or firefox"
+        required: false
+        default: "electron"
       ALLURE_JOB_RUN_ID:
         description: "ALLURE_JOB_RUN_ID service parameter. Leave blank."
         required: false
@@ -14,17 +19,18 @@ jobs:
   resolutions:
     runs-on: ubuntu-latest
     env:
-      CYPRESS_IS_RERUN: ${{ github.event.inputs.ALLURE_JOB_RUN_ID != '' }}
       CYPRESS_RUN_NUMBER: ${{ github.run_number }}
-      ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+      BROWSER: ${{ github.event.inputs.BROWSER || 'electron' }}
+      # Адрес и номер проекта берутся из Variables, а если их там нет — из Secrets.
+      ALLURE_ENDPOINT: ${{ vars.ALLURE_ENDPOINT || secrets.ALLURE_ENDPOINT }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
       # Тот же проект, что и у demo.yml. Для отдельного проекта впишите его ID строкой.
-      ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
+      ALLURE_PROJECT_ID: ${{ vars.ALLURE_PROJECT_ID || secrets.ALLURE_PROJECT_ID }}
       ALLURE_LAUNCH_NAME: "Resolutions demo #${{ github.run_number }}"
       ALLURE_RESULTS: allure-results
       ALLURE_JOB_RUN_ID: ${{ github.event.inputs.ALLURE_JOB_RUN_ID }}
       ALLURE_LAUNCH_TAGS: "cypress,resolutions"
-      ALLURE_JOB_PARAMETERS: "browser=Electron,os=Linux,env=staging"
+      ALLURE_JOB_PARAMETERS: "browser=${{ github.event.inputs.BROWSER || 'electron' }},os=Linux,env=staging"
     steps:
       - uses: actions/checkout@v4
 
