@@ -21,10 +21,8 @@ jobs:
     env:
       CYPRESS_RUN_NUMBER: ${{ github.run_number }}
       BROWSER: ${{ github.event.inputs.BROWSER || 'electron' }}
-      # Адрес и номер проекта берутся из Variables, а если их там нет — из Secrets.
       ALLURE_ENDPOINT: ${{ vars.ALLURE_ENDPOINT || secrets.ALLURE_ENDPOINT }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-      # Тот же проект, что и у demo.yml. Для отдельного проекта впишите его ID строкой.
       ALLURE_PROJECT_ID: ${{ vars.ALLURE_PROJECT_ID || secrets.ALLURE_PROJECT_ID }}
       ALLURE_LAUNCH_NAME: "Resolutions demo #${{ github.run_number }}"
       ALLURE_RESULTS: allure-results
