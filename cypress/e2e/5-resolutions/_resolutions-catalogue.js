@@ -293,11 +293,12 @@ export const CATALOGUE = [
 ]
 
 /**
- * Флаки падают на нечётных номерах прогона (run_number) и проходят
- * на чётных и при rerun из TestOps.
+ * Флаки падают на нечётных номерах прогона (run_number) и проходят на чётных.
+ * Rerun из TestOps — это новый прогон воркфлоу с номером +1, так что после
+ * падения на нечётном прогоне rerun их зеленит.
  */
-export function verdictFor (item, { isRerun, runNumber }) {
+export function verdictFor (item, { runNumber }) {
   if (!item.fail) return { ok: true }
-  if (item.flaky && (isRerun || runNumber % 2 === 0)) return { ok: true }
+  if (item.flaky && runNumber % 2 === 0) return { ok: true }
   return { ok: false, cluster: item.fail.cluster, message: item.fail.message(item) }
 }

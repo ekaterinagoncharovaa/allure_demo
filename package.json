@@ -49,7 +49,7 @@
     "local:run:demo": "start-test 8080 cy:run:demo",
     "cy:run:reprisk": "cypress run --spec \"cypress/e2e/4-reprisk/**/*.cy.js\"",
     "local:run:reprisk": "start-test 8080 cy:run:reprisk",
-    "cy:run:resolutions": "cypress run --spec \"cypress/e2e/5-resolutions/**/*.cy.js\"",
+    "cy:run:resolutions": "cypress run --browser ${BROWSER:-electron} --spec \"cypress/e2e/5-resolutions/**/*.cy.js,cypress/e2e/auth/**/*.cy.js\"",
     "local:run:resolutions": "start-test 8080 cy:run:resolutions"
   },
   "repository": {
